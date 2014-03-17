@@ -1,31 +1,19 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-<title>LOGIN</title>
-<meta charset="UTF-8"/>
-</head>
-
-<body>
-
-
 <?php
+session_start();
 
-	$db_host = "dbhome.cs.nctu.edu.tw";
-	$db_name = "linym_cs";
-	$db_user = "linym_cs";
-	$db_password = "xup6u.4aup6";
-	$dsn = "mysql:host=$db_host;dbname=$db_name";
-	$db = new PDO($dsn, $db_user, $db_password);
-	
-	$sql = "INSERT INTO `user` (id, account, password, is_admin)". " VALUES(?, ?, ?, ?)"; 
-	$sth = $db->prepare($sql); 
-	$hash = crypt($_POST['password']);
-	$sth->execute(array(1, $_POST['account'], $hash, $_POST['is_admin'])); 
+require_once('connect.php');
+$sql = "SELECT password FROM `user`" . " WHERE `account` = ?";
+$sth = $db->prepare($sql);
+$sth->execute(array($_POST["email"]));
+$result = $sth->fetchObject();
+if (crypt($_POST["password"], $result->password) == $result->password) {
+   echo "Password verified!";
+   $_SESSION['login']=1;
+}
+
+if($_SESSION['login'] == 1){
+	header()
+}
+
 
 ?>
-
-</body>
-
-
-</html>
-
